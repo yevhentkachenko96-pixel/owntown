@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OWNTOWN Apart Hotel — Kyiv</title>
+
+  <style>
+    /* ─── Fonts ─────────────────────────────────────────────── */
+    @font-face { font-family: 'GothaPro'; src: url('fonts/GothaProLig.otf') format('opentype'); font-weight: 300; font-style: normal; }
+    @font-face { font-family: 'GothaPro'; src: url('fonts/GothaProReg.otf') format('opentype'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'GothaPro'; src: url('fonts/GothaProBol.otf') format('opentype'); font-weight: 700; font-style: normal; }
+
+    /* ─── Variables ─────────────────────────────────────────── */
+    :root {
+      --white:      #FFFFFF;
+      --black:      #1a1a1a;
+      --beige:      #ECE9E0;
+      --beige-mid:  #E5E3DF;
+      --beige-light:#F7F5F1;
+      --text:       #212529;
+      --muted:      #888580;
+      --nav-h:      72px;
+    }
+
+    /* ─── Reset ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'GothaPro', 'Helvetica Neue', Arial, sans-serif; font-weight: 300; color: var(--text); background: var(--white); overflow-x: hidden; }
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+    /* ─── Nav ───────────────────────────────────────────────── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: var(--nav-h);
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+      padding: 0 48px;
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+    }
+    .nav.scrolled {
+      background: rgba(255,255,255,0.97);
+      box-shadow: 0 1px 0 var(--beige-mid);
+    }
+    .nav__left  { display: flex; gap: 40px; align-items: center; justify-content: flex-start; }
+    .nav__right { display: flex; gap: 28px; align-items: center; justify-content: flex-end; }
+    .nav__logo  { justify-self: center; }
+    .nav__link {
+      font-size: 13px; font-weight: 400; letter-spacing: 0.06em;
+      color: var(--white); transition: opacity 0.25s;
+      position: relative;
+    }
+    .nav.scrolled .nav__link { color: var(--black); }
+    .nav__link::after {
+      content: ''; position: absolute; bottom: -3px; left: 0; right: 0;
+      height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .nav__link:hover::after { transform: scaleX(1); }
+    .nav__logo { height: 44px; }
+    .nav__logo img { height: 100%; width: auto; filter: brightness(0) invert(1); transition: filter 0.4s; }
+    .nav.scrolled .nav__logo img { filter: none; }
+    .nav__book {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0;
+      width: 164px; height: 36px; padding: 0 20px;
+      font-size: 13px; font-weight: 400; letter-spacing: 0.06em; line-height: 1;
+      border-radius: 999px;
+      background: var(--white); color: var(--black);
+      border: 1px solid var(--white);
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
+      overflow: hidden;
+    }
+    .nav.scrolled .nav__book {
+      background: var(--black); color: var(--white); border-color: var(--black);
+    }
+    .nav.scrolled .nav__book:hover { background: #333; border-color: #333; }
+    .nav__book:hover { background: rgba(255,255,255,0.88); }
+
+    /* ─── Lang Switch ───────────────────────────────────────── */
+    .lang-switch {
+      display: flex; align-items: center; gap: 0;
+    }
+    .lang-btn {
+      font-family: inherit; font-size: 11px; font-weight: 400;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); background: none; border: none;
+      cursor: pointer; padding: 4px 6px; line-height: 1;
+      transition: color 0.25s;
+    }
+    .lang-btn.active { color: var(--white); }
+    .nav.scrolled .lang-btn { color: rgba(0,0,0,0.35); }
+    .nav.scrolled .lang-btn.active { color: var(--black); }
+    .lang-sep {
+      font-size: 10px; color: rgba(255,255,255,0.25);
+      line-height: 1; user-select: none;
+    }
+    .nav.scrolled .lang-sep { color: rgba(0,0,0,0.2); }
+
+    /* ─── Button arrow animation ────────────────────────────── */
+
+    /* Shared arrow — inline, same behaviour on nav and hero button */
+    .nav__book,
+    .btn-primary,
+    .apt-card__btn { overflow: hidden; }
+    .btn-arrow {
+      display: inline-block;
+      max-width: 0; overflow: hidden; opacity: 0; margin-left: 0;
+      transition: max-width 0.28s ease, margin-left 0.28s ease, opacity 0.2s ease;
+    }
+    .nav__book:hover .btn-arrow,
+    .btn-primary:hover .btn-arrow,
+    .apt-card__btn:hover .btn-arrow {
+      max-width: 20px; margin-left: 6px; opacity: 1;
+      animation: arrowFloat 1s ease-in-out infinite;
+    }
+    @keyframes arrowFloat {
+      0%, 100% { transform: translateX(0); }
+      50%       { transform: translateX(4px); }
+    }
+
+    /* ─── Hero btn-outline slide-fill ──────────────────────── */
+    .btn-outline { position: relative; overflow: hidden; }
+    .btn-outline::before {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(255,255,255,0.18);
+      transform: translateX(-100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-outline:hover::before { transform: translateX(0); }
+
+    /* ─── Hero ──────────────────────────────────────────────── */
+    .hero {
+      position: relative; height: 100vh; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero__slides { position: absolute; inset: 0; }
+    .hero__slide {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      opacity: 0; will-change: opacity;
+    }
+    .hero__slide.active { opacity: 1; }
+    .hero__overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.45) 60%, rgba(0,0,0,0.55) 100%);
+    }
+    .hero__content {
+      position: relative; z-index: 2; text-align: center; color: var(--white);
+      padding: 0 24px;
+    }
+    .hero__eyebrow {
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      opacity: 0.8; margin-bottom: 20px;
+    }
+    .hero__title {
+      font-size: clamp(40px, 6vw, 88px); font-weight: 300; line-height: 1.05;
+      letter-spacing: -0.02em; margin-bottom: 36px;
+    }
+    .hero__title span { font-weight: 700; }
+    .hero__ctas { display: flex; gap: 16px; justify-content: center; align-items: center; }
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 192px; height: 48px; padding: 0 28px;
+      font-size: 13px; font-weight: 400; letter-spacing: 0.08em; line-height: 1;
+      border-radius: 999px;
+      background: var(--white); color: var(--black);
+      transition: background 0.3s;
+    }
+    .btn-primary:hover { background: var(--beige); }
+    .btn-outline {
+      display: inline-flex; align-items: center; justify-content: center;
+      height: 48px; padding: 0 36px;
+      font-size: 13px; font-weight: 400; letter-spacing: 0.08em; line-height: 1;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.6); color: var(--white);
+      transition: all 0.3s;
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.15); }
+    .hero__scroll-hint {
+      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+      z-index: 2; display: flex; flex-direction: row; align-items: center; gap: 10px;
+      color: rgba(255,255,255,0.45);
+    }
+    .hero__scroll-text {
+      font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase; line-height: 1;
+    }
+    .hero__scroll-arrow {
+      display: flex; align-items: center; justify-content: center;
+      animation: scrollBounce 2.4s ease-in-out infinite;
+    }
+    .hero__scroll-arrow svg { width: 13px; height: 13px; }
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateY(0); opacity: 0.45; }
+      50%       { transform: translateY(4px); opacity: 0.75; }
+    }
+
+    /* ─── Hero slider nav arrows ────────────────────────────── */
+    .hero__nav {
+      position: absolute; top: 0; bottom: 0; z-index: 4;
+      width: 22%; cursor: pointer;
+      display: flex; align-items: center;
+      border: none; background: none; padding: 0;
+      opacity: 0; transition: opacity 0.35s ease;
+    }
+    .hero__nav--prev { left: 0; justify-content: flex-start; padding-left: 40px; }
+    .hero__nav--next { right: 0; justify-content: flex-end; padding-right: 40px; }
+    .hero__nav:hover { opacity: 1; }
+    .hero__nav-icon {
+      display: flex; align-items: center; justify-content: center;
+      width: 48px; height: 48px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(0,0,0,0.12);
+      backdrop-filter: blur(4px);
+      transition: border-color 0.25s, background 0.25s, transform 0.25s;
+    }
+    .hero__nav:hover .hero__nav-icon {
+      border-color: rgba(255,255,255,0.7);
+      background: rgba(0,0,0,0.25);
+      transform: scale(1.06);
+    }
+    .hero__nav-icon svg { width: 16px; height: 16px; }
+
+    /* Hero slider dots */
+    .hero__dots {
+      position: absolute; bottom: 56px; left: 50%; transform: translateX(-50%);
+      z-index: 2; display: flex; gap: 8px;
+    }
+    .hero__dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,0.4); cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .hero__dot.active { background: var(--white); transform: scale(1.4); }
+
+    /* ─── Section shared ────────────────────────────────────── */
+    .section { padding: 100px 0; }
+    .section--beige { background: var(--beige); }
+    .section--dark { background: var(--black); color: var(--white); }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+    .section__label {
+      font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 16px;
+    }
+    .section--dark .section__label { color: rgba(255,255,255,0.45); }
+    .section__title {
+      font-size: clamp(32px, 4vw, 56px); font-weight: 300; line-height: 1.1;
+      letter-spacing: -0.02em; margin-bottom: 24px;
+    }
+    .reveal { opacity: 0; transform: translateY(32px); }
+
+    /* ─── About / Split ────────────────────────────────────── */
+    #hotel { padding: 0; }
+    .about__split {
+      display: grid; grid-template-columns: 1fr 1fr;
+      position: relative;
+    }
+    .about__image {
+      position: relative;
+      align-self: stretch;
+      min-height: 100%;
+    }
+    .about__image img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    /* About slider */
+    .about__slides { position: absolute; inset: 0; }
+    .about__slide {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      opacity: 0; will-change: opacity;
+    }
+    .about__slide.active { opacity: 1; }
+    .about__nav {
+      position: absolute; top: 0; bottom: 0; z-index: 4;
+      width: 22%; cursor: pointer;
+      display: flex; align-items: center;
+      border: none; background: none; padding: 0;
+      opacity: 0; transition: opacity 0.35s ease;
+    }
+    .about__nav--prev { left: 0; justify-content: flex-start; padding-left: 20px; }
+    .about__nav--next { right: 0; justify-content: flex-end; padding-right: 20px; }
+    .about__nav:hover { opacity: 1; }
+    .about__nav-icon {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(0,0,0,0.15); backdrop-filter: blur(4px);
+      transition: border-color 0.25s, background 0.25s, transform 0.25s;
+    }
+    .about__nav:hover .about__nav-icon {
+      border-color: rgba(255,255,255,0.7);
+      background: rgba(0,0,0,0.28);
+      transform: scale(1.06);
+    }
+    .about__nav-icon svg { width: 14px; height: 14px; }
+    .about__dots {
+      /* bottom: 80px compensation for apartments -80px overlap + 22px visible gap */
+      position: absolute; bottom: 102px; left: 50%; transform: translateX(-50%);
+      z-index: 20; display: flex; gap: 7px; align-items: center;
+    }
+    .about__dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: rgba(255,255,255,0.45); cursor: pointer;
+      transition: background 0.3s, transform 0.3s, width 0.3s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .about__dot.active {
+      background: var(--white); transform: scale(1.25);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+    .about__content {
+      padding: 100px 64px 180px;
+      display: flex; flex-direction: column; justify-content: flex-start;
+      background: var(--beige);
+    }
+    .about__body {
+      font-size: 16px; line-height: 1.75; color: #666;
+      margin-bottom: 32px;
+    }
+
+    /* USP list — 2×2 grid */
+    .usp__list {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 28px 32px;
+    }
+    .usp__item {
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .usp__icon {
+      width: 40px; height: 40px; flex-shrink: 0;
+      border: 1px solid var(--beige-mid); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--white);
+    }
+    .usp__icon svg { width: 17px; height: 17px; }
+    .usp__name { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+    .usp__desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    /* ─── Apartments ────────────────────────────────────────── */
+    #apartments {
+      position: relative; z-index: 5;
+      margin-top: -80px;
+      border-radius: 0;
+      background: var(--white);
+      padding: 0;
+      overflow: visible;
+    }
+    .apts__layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 64px;
+      align-items: start;
+      padding: 100px 48px 100px 64px;
+    }
+    .apts__intro {
+      position: sticky;
+      top: calc(var(--nav-h) + 48px);
+    }
+    .apts__intro .section__title { margin-bottom: 20px; }
+    .apts__compare-btn {
+      display: inline-block;
+      font-family: inherit; font-size: 13px; font-weight: 400; letter-spacing: 0.08em;
+      color: var(--black); background: none;
+      border: none; border-bottom: 1px solid rgba(0,0,0,0.25);
+      padding: 0 0 2px 0; margin-top: 8px;
+      cursor: pointer; transition: opacity 0.25s;
+    }
+    .apts__compare-btn:hover { opacity: 0.45; }
+    .apts__grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      overflow: visible;
+    }
+    .apt-card {
+      width: 100%; background: var(--white);
+      border-radius: 16px; overflow: hidden;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      transition: box-shadow 0.3s ease;
+      transform-origin: center center;
+      will-change: transform, opacity;
+    }
+    .apt-card:hover { box-shadow: 0 8px 40px rgba(0,0,0,0.13); }
+    .apt-card__img-wrap {
+      position: relative; overflow: hidden;
+      aspect-ratio: 4/3;
+    }
+    .apt-card__img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .apt-card:hover .apt-card__img { transform: scale(1.04); }
+
+    /* Card image slider */
+    .apt-card__slides { position: absolute; inset: 0; }
+    .apt-card__slide {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      opacity: 0; transition: opacity 0.4s ease;
+    }
+    .apt-card__slide.active { opacity: 1; }
+    .apt-card__snav {
+      position: absolute; top: 0; bottom: 0; z-index: 6;
+      width: 22%; display: flex; align-items: center;
+      background: none; border: none; cursor: pointer;
+      opacity: 0; transition: opacity 0.3s; padding: 0;
+    }
+    .apt-card__snav--prev { left: 0; justify-content: flex-start; padding-left: 10px; }
+    .apt-card__snav--next { right: 0; justify-content: flex-end; padding-right: 10px; }
+    .apt-card__img-wrap:hover .apt-card__snav { opacity: 1; }
+    .apt-card__snav-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(255,255,255,0.88);
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.18);
+      flex-shrink: 0;
+    }
+    .apt-card__snav-icon svg { width: 10px; height: 10px; }
+    .apt-card__sdots {
+      position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+      z-index: 7; display: flex; gap: 5px; align-items: center;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .apt-card__img-wrap:hover .apt-card__sdots { opacity: 1; }
+    .apt-card__sdot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: rgba(255,255,255,0.5); cursor: pointer;
+      transition: background 0.25s, transform 0.25s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    }
+    .apt-card__sdot.active { background: var(--white); transform: scale(1.35); }
+
+    .apt-card__badge {
+      position: absolute; top: 16px; left: 16px; z-index: 8;
+      font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+      background: var(--white); padding: 5px 12px; border-radius: 999px;
+    }
+    .apt-card__body { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 0; }
+    .apt-card__name { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .apt-card__desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
+    .apt-card__meta {
+      display: flex; gap: 16px; margin-bottom: 20px;
+      font-size: 12px; color: var(--muted);
+    }
+    .apt-card__meta span { display: flex; align-items: center; gap: 5px; }
+    .apt-card__footer { display: flex; align-items: center; justify-content: space-between; }
+    .apt-card__price { }
+    .apt-card__price-from { font-size: 11px; color: var(--muted); letter-spacing: 0.05em; }
+    .apt-card__price-val { font-size: 22px; font-weight: 700; }
+    .apt-card__price-unit { font-size: 11px; color: var(--muted); }
+    .apt-card__btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 110px; height: 40px; padding: 0 20px;
+      font-size: 12px; letter-spacing: 0.08em; font-weight: 400; line-height: 1;
+      border-radius: 999px;
+      background: var(--black); color: var(--white);
+      transition: background 0.25s;
+    }
+    .apt-card__btn:hover { background: #333; }
+    .apt-card__badge--pick {
+      background: var(--white); color: var(--black); border: 1px solid rgba(0,0,0,0.12);
+    }
+    .apt-card__badge--deal {
+      background: #2d7a3a; color: var(--white); border: none;
+    }
+    .apt-card__price-original {
+      font-size: 13px; color: var(--muted);
+      text-decoration: line-through; margin-right: 4px; font-weight: 400;
+    }
+    .apt-card__price-discount {
+      display: inline-block; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.06em; color: var(--white);
+      background: #2d7a3a; border-radius: 999px;
+      padding: 2px 7px; margin-left: 6px; vertical-align: middle;
+    }
+
+    /* ─── Compare Modal ──────────────────────────────────────────── */
+    .compare-modal {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; align-items: flex-end; justify-content: center;
+      pointer-events: none; opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .compare-modal.open { pointer-events: all; opacity: 1; }
+    .compare-modal__backdrop {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+    }
+    .compare-modal__panel {
+      position: relative; z-index: 1;
+      width: 100%; max-height: 88vh;
+      background: var(--white);
+      border-radius: 20px 20px 0 0;
+      display: flex; flex-direction: column;
+      transform: translateY(32px);
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+    .compare-modal.open .compare-modal__panel { transform: translateY(0); }
+    .compare-modal__header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 32px;
+      border-bottom: 1px solid var(--beige-mid);
+      flex-shrink: 0;
+    }
+    .compare-modal__header h3 { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+    .compare-modal__close {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--beige); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .compare-modal__close:hover { background: var(--beige-mid); }
+    .compare-modal__body { overflow-x: auto; flex: 1; }
+    .compare-table {
+      width: 100%; border-collapse: collapse; min-width: 860px;
+    }
+    .compare-table th {
+      padding: 16px 20px 14px;
+      font-size: 13px; font-weight: 700; text-align: left;
+      border-bottom: 2px solid var(--beige);
+      position: sticky; top: 0; background: var(--white); z-index: 1;
+    }
+    .compare-table th.ct-feat { width: 130px; font-weight: 400; color: var(--muted); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+    .compare-table th:not(.ct-feat) { min-width: 150px; }
+    .compare-table td {
+      padding: 13px 20px;
+      font-size: 13px; color: var(--text);
+      border-bottom: 1px solid var(--beige);
+      vertical-align: middle;
+    }
+    .compare-table td.ct-feat {
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .ct-photo img {
+      width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 10px; display: block;
+    }
+    .ct-check {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--black); color: white; font-size: 11px;
+    }
+    .ct-dash { color: var(--beige-mid); font-size: 18px; }
+    .ct-price-val { font-size: 18px; font-weight: 700; }
+    .ct-price-unit { font-size: 11px; color: var(--muted); margin-left: 2px; }
+    .ct-badge {
+      display: inline-block; font-size: 10px; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 3px 10px; border-radius: 999px;
+      border: 1px solid var(--beige-mid); color: var(--muted);
+    }
+    .ct-book {
+      display: inline-flex; align-items: center; justify-content: center;
+      height: 34px; padding: 0 18px; border-radius: 999px;
+      background: var(--black); color: var(--white);
+      font-size: 11px; letter-spacing: 0.07em; text-decoration: none;
+      transition: background 0.2s;
+    }
+    .ct-book:hover { background: #333; }
+
+    /* ─── Amenities ─────────────────────────────────────────── */
+    .amenities__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .amenity {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      padding: 32px 24px 28px;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; gap: 12px;
+      transition: box-shadow 0.3s;
+    }
+    .amenity:hover { box-shadow: 0 8px 40px rgba(0,0,0,0.11); }
+    .amenity__icon { color: var(--black); }
+    .amenity__icon svg { width: 24px; height: 24px; stroke: var(--black); }
+    .amenity__name { font-size: 14px; font-weight: 700; }
+    .amenity__note { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ─── Ratings ───────────────────────────────────────────── */
+    .ratings { text-align: center; }
+    .ratings__hero {
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      margin-bottom: 12px;
+    }
+    .ratings__laurel { font-size: 40px; line-height: 1; }
+    .ratings__score {
+      font-size: 80px; font-weight: 700; line-height: 1;
+      letter-spacing: -0.02em; color: var(--black);
+    }
+    .ratings__label { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+    .ratings__sub { font-size: 14px; color: var(--muted); line-height: 1.5; max-width: 340px; margin: 0 auto 32px; }
+
+    .ratings__grid {
+      display: grid; grid-template-columns: auto repeat(6, 1fr);
+      gap: 0; border-top: 1px solid var(--beige-mid);
+      margin-top: 40px; text-align: left;
+    }
+    .ratings__col {
+      padding: 28px 20px 24px;
+      border-right: 1px solid var(--beige-mid);
+    }
+    .ratings__col:last-child { border-right: none; }
+
+    /* Overall rating column (bar chart) */
+    .ratings__overall-label { font-size: 13px; font-weight: 700; margin-bottom: 14px; }
+    .ratings__bar-row {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; color: var(--muted); margin-bottom: 5px;
+    }
+    .ratings__bar-track {
+      flex: 1; height: 3px; background: var(--beige-mid); border-radius: 2px; overflow: hidden;
+    }
+    .ratings__bar-fill { height: 100%; background: var(--black); border-radius: 2px; }
+
+    /* Category columns */
+    .ratings__cat-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .ratings__cat-val  { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+    .ratings__cat-icon svg { width: 20px; height: 20px; stroke: var(--black); }
+
+    /* ─── Location ──────────────────────────────────────────── */
+    .location__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .location__address {
+      font-size: 13px; color: var(--muted); line-height: 2;
+      margin-bottom: 32px; letter-spacing: 0.03em;
+    }
+    .location__address strong { display: block; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .location__nearby { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+    .location__nearby-item {
+      display: flex; align-items: center; gap: 14px;
+      font-size: 14px;
+    }
+    .location__nearby-item::before {
+      content: ''; width: 24px; height: 1px; background: var(--beige-mid); flex-shrink: 0;
+    }
+    .location__map {
+      aspect-ratio: 1; background: var(--beige);
+      border-radius: 4px; overflow: hidden; position: relative;
+    }
+    .location__map-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px; color: var(--muted); font-size: 13px;
+    }
+    .location__map-placeholder svg { width: 32px; height: 32px; opacity: 0.4; }
+    .location__map-placeholder a {
+      font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+      border-bottom: 1px solid var(--muted); padding-bottom: 2px;
+      color: var(--black);
+    }
+
+    /* ─── FAQ ───────────────────────────────────────────────── */
+    .faq__list { max-width: 760px; }
+    .faq__item {
+      border-bottom: 1px solid var(--beige-mid); overflow: hidden;
+    }
+    .faq__question {
+      width: 100%; display: flex; justify-content: space-between; align-items: center;
+      padding: 24px 0; text-align: left;
+      font-size: 16px; font-weight: 400; cursor: pointer;
+      transition: color 0.2s;
+    }
+    .faq__question:hover { color: var(--muted); }
+    .faq__icon {
+      width: 24px; height: 24px; flex-shrink: 0; position: relative;
+      transition: transform 0.35s ease;
+    }
+    .faq__icon::before, .faq__icon::after {
+      content: ''; position: absolute; background: currentColor;
+      transition: transform 0.35s ease, opacity 0.35s ease;
+    }
+    .faq__icon::before { width: 12px; height: 1px; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+    .faq__icon::after { width: 1px; height: 12px; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+    .faq__item.open .faq__icon::after { opacity: 0; transform: translate(-50%,-50%) rotate(90deg); }
+    .faq__answer {
+      height: 0; overflow: hidden;
+    }
+    .faq__answer-inner {
+      padding: 0 0 24px;
+      font-size: 14px; color: var(--muted); line-height: 1.8;
+    }
+
+    /* ─── Contacts ──────────────────────────────────────────── */
+    .contacts__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .contacts__info { }
+    .contacts__cta-title {
+      font-size: clamp(28px, 3.5vw, 48px); font-weight: 300;
+      line-height: 1.1; margin-bottom: 32px;
+    }
+    .contacts__cta-title span { font-weight: 700; }
+    .contacts__btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      height: 48px; padding: 0 36px;
+      font-size: 13px; letter-spacing: 0.08em; line-height: 1;
+      border-radius: 999px;
+      background: var(--white); color: var(--black);
+      transition: background 0.3s;
+    }
+    .contacts__btn:hover { background: var(--beige); }
+    .contacts__detail { margin-top: 48px; }
+    .contacts__row {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 14px;
+    }
+    .contacts__row-label {
+      width: 100px; flex-shrink: 0;
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.4); padding-top: 2px;
+    }
+    .contacts__row-val { color: rgba(255,255,255,0.85); }
+    .contacts__row-val a { color: rgba(255,255,255,0.85); transition: color 0.2s; }
+    .contacts__row-val a:hover { color: var(--white); }
+    .contacts__messengers {
+      display: flex; gap: 12px; margin-top: 8px;
+    }
+    .contacts__messenger {
+      display: inline-flex; align-items: center; justify-content: center;
+      height: 36px; padding: 0 18px;
+      font-size: 11px; letter-spacing: 0.06em; line-height: 1;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.7);
+      transition: all 0.25s;
+    }
+    .contacts__messenger:hover { border-color: var(--white); color: var(--white); }
+    .contacts__social { margin-top: 32px; display: flex; gap: 16px; }
+    .contacts__social a {
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.45); border-bottom: 1px solid rgba(255,255,255,0.15);
+      padding-bottom: 2px; transition: color 0.2s, border-color 0.2s;
+    }
+    .contacts__social a:hover { color: var(--white); border-color: rgba(255,255,255,0.5); }
+
+    /* ─── Footer ────────────────────────────────────────────── */
+    .footer {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 24px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--black);
+    }
+    .footer__copy { font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.05em; }
+    .footer__logo { height: 28px; }
+    .footer__logo img { height: 100%; filter: brightness(0) invert(1); opacity: 0.4; }
+
+    /* ─── Sticky book button (mobile) ──────────────────────── */
+    .sticky-book {
+      display: none;
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
+      padding: 16px 24px 24px;
+      background: linear-gradient(to top, rgba(255,255,255,1) 60%, rgba(255,255,255,0));
+    }
+    .sticky-book__btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; height: 52px;
+      font-size: 14px; font-weight: 700; letter-spacing: 0.06em; line-height: 1;
+      border-radius: 999px;
+      background: var(--black); color: var(--white);
+    }
+
+    /* ─── Responsive ────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      :root { --nav-h: 60px; }
+      .nav { padding: 0 24px; }
+      .nav__left { gap: 24px; }
+      .nav__right { display: none; }
+      .container { padding: 0 24px; }
+      .section { padding: 72px 0; }
+      .section__title { margin-bottom: 40px; }
+      .about__split { grid-template-columns: 1fr; }
+      .about__image { height: 300px; }
+      .about__content { padding: 48px 24px; }
+      .apts__layout { grid-template-columns: 1fr; gap: 40px; padding: 80px 24px; }
+      .apts__intro { position: static; }
+      .apts__grid { grid-template-columns: 1fr; }
+      .amenities__grid { grid-template-columns: 1fr 1fr; gap: 28px 32px; }
+      .location__grid { grid-template-columns: 1fr; gap: 40px; }
+      .contacts__grid { grid-template-columns: 1fr; gap: 48px; }
+      .footer { padding: 20px 24px; }
+      .hero__ctas .btn-outline { display: none; }
+      .sticky-book { display: block; }
+    }
+
+    @media (max-width: 480px) {
+      .amenities__grid { grid-template-columns: 1fr; }
+      .hero__title { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAV ─────────────────────────────────────────────────── -->
+  <nav class="nav" id="nav">
+    <div class="nav__left">
+      <a href="#hotel" class="nav__link" data-i18n="nav_hotel">Hotel</a>
+      <a href="#apartments" class="nav__link" data-i18n="nav_apartments">Apartments</a>
+      <a href="#book" class="nav__link" data-i18n="nav_contacts">Contacts</a>
+    </div>
+    <a href="#" class="nav__logo">
+      <img src="https://owntown.apartments/assets/logo-owntown.svg" alt="OWNTOWN Apart Hotel" />
+    </a>
+    <div class="nav__right">
+      <div class="lang-switch">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <span class="lang-sep">/</span>
+        <button class="lang-btn" data-lang="ua">UA</button>
+      </div>
+      <a href="#book" class="nav__book">
+        <span data-i18n="nav_book">Book now</span><span class="btn-arrow">→</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ─── HERO ─────────────────────────────────────────────────── -->
+  <section class="hero" id="hero">
+    <div class="hero__slides">
+      <div class="hero__slide active" style="background-image:url('https://owntown.apartments/assets/home-page/1.jpg')"></div>
+      <div class="hero__slide" style="background-image:url('https://owntown.apartments/assets/home-page/2.jpg')"></div>
+      <div class="hero__slide" style="background-image:url('https://owntown.apartments/assets/home-page/3.jpg')"></div>
+      <div class="hero__slide" style="background-image:url('https://owntown.apartments/assets/home-page/4.jpg')"></div>
+      <div class="hero__slide" style="background-image:url('https://owntown.apartments/assets/home-page/5.jpg')"></div>
+    </div>
+    <div class="hero__overlay"></div>
+    <div class="hero__content" id="heroContent">
+      <p class="hero__eyebrow" data-i18n="hero_eyebrow">Kyiv, Kruhlouniversytetska 4b</p>
+      <h1 class="hero__title" data-i18n-html="hero_title">Your own town<br><span>in the heart of Kyiv</span></h1>
+      <div class="hero__ctas">
+        <a href="#book" class="btn-primary">
+          <span data-i18n="hero_cta_book">Book now</span><span class="btn-arrow">→</span>
+        </a>
+        <a href="#apartments" class="btn-outline" data-i18n="hero_cta_apts">View apartments</a>
+      </div>
+    </div>
+    <div class="hero__dots" id="heroDots">
+      <span class="hero__dot active" data-index="0"></span>
+      <span class="hero__dot" data-index="1"></span>
+      <span class="hero__dot" data-index="2"></span>
+      <span class="hero__dot" data-index="3"></span>
+      <span class="hero__dot" data-index="4"></span>
+    </div>
+    <!-- Slider nav arrows -->
+    <button class="hero__nav hero__nav--prev" id="heroPrev" aria-label="Previous slide">
+      <span class="hero__nav-icon">
+        <svg viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="10,2 4,8 10,14"/>
+        </svg>
+      </span>
+    </button>
+    <button class="hero__nav hero__nav--next" id="heroNext" aria-label="Next slide">
+      <span class="hero__nav-icon">
+        <svg viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6,2 12,8 6,14"/>
+        </svg>
+      </span>
+    </button>
+
+    <div class="hero__scroll-hint">
+      <span class="hero__scroll-text" data-i18n="scroll_hint">scroll</span>
+      <span class="hero__scroll-arrow">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="2,5 7,10 12,5"/>
+        </svg>
+      </span>
+    </div>
+  </section>
+
+  <!-- ─── HOTEL / ABOUT ──────────────────────────────────────── -->
+  <section class="section section--beige" id="hotel">
+    <div class="about__split">
+
+      <!-- Left: image slider -->
+      <div class="about__image">
+        <div class="about__slides">
+          <div class="about__slide active" style="background-image:url('https://owntown.apartments/assets/home-page/3.jpg')"></div>
+          <div class="about__slide" style="background-image:url('https://owntown.apartments/assets/home-page/1.jpg')"></div>
+          <div class="about__slide" style="background-image:url('https://owntown.apartments/assets/home-page/2.jpg')"></div>
+          <div class="about__slide" style="background-image:url('https://owntown.apartments/assets/home-page/4.jpg')"></div>
+        </div>
+        <button class="about__nav about__nav--prev" id="aboutPrev" aria-label="Previous">
+          <span class="about__nav-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="10,2 4,8 10,14"/></svg>
+          </span>
+        </button>
+        <button class="about__nav about__nav--next" id="aboutNext" aria-label="Next">
+          <span class="about__nav-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,2 12,8 6,14"/></svg>
+          </span>
+        </button>
+        <div class="about__dots" id="aboutDots">
+          <span class="about__dot active" data-index="0"></span>
+          <span class="about__dot" data-index="1"></span>
+          <span class="about__dot" data-index="2"></span>
+          <span class="about__dot" data-index="3"></span>
+        </div>
+      </div>
+
+      <!-- Right: content -->
+      <div class="about__content">
+        <p class="section__label reveal" data-i18n="about_label">About us</p>
+        <h2 class="section__title reveal" data-i18n-html="about_title">A calm place<br>behind Khreschatyk</h2>
+        <div class="about__body reveal">
+          <p data-i18n="about_p1">Sustainable apartment hotel steps from Khreschatyk. Modern design meets local art — our team is happy to guide you through Kyiv's culture and social scene.</p>
+        </div>
+        <div class="usp__list reveal">
+          <div class="usp__item">
+            <div class="usp__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            </div>
+            <div>
+              <div class="usp__name" data-i18n="usp1_name">City centre</div>
+              <div class="usp__desc" data-i18n="usp1_desc">Steps from Khreschatyk, Bessarabska Market and Pinchuk Art Centre</div>
+            </div>
+          </div>
+          <div class="usp__item">
+            <div class="usp__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            </div>
+            <div>
+              <div class="usp__name" data-i18n="usp2_name">Fully equipped</div>
+              <div class="usp__desc" data-i18n="usp2_desc">Kitchen, Smart TV, Netflix, local sustainable cosmetics and more</div>
+            </div>
+          </div>
+          <div class="usp__item">
+            <div class="usp__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            </div>
+            <div>
+              <div class="usp__name" data-i18n="usp3_name">Check-in 24/7</div>
+              <div class="usp__desc" data-i18n="usp3_desc">Self check-in system and an administrator-friend always ready to help</div>
+            </div>
+          </div>
+          <div class="usp__item">
+            <div class="usp__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+            </div>
+            <div>
+              <div class="usp__name" data-i18n="usp4_name">Privacy & quiet</div>
+              <div class="usp__desc" data-i18n="usp4_desc">The atmosphere of a private apartment with the service of a boutique hotel</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── APARTMENTS ─────────────────────────────────────────── -->
+  <section class="section" id="apartments">
+    <div class="apts__layout">
+
+      <!-- Left: sticky intro -->
+      <div class="apts__intro">
+        <p class="section__label reveal" data-i18n="apts_label">Apartments</p>
+        <h2 class="section__title" data-i18n-html="apts_title">5 types.<br>One address.</h2>
+        <button class="apts__compare-btn" id="compareBtn" data-i18n="apts_compare">Compare</button>
+      </div>
+
+      <!-- Right: animated card grid -->
+      <div class="apts__grid" id="aptsGrid">
+
+        <!-- No1 -->
+        <div class="apt-card reveal">
+          <div class="apt-card__img-wrap">
+            <div class="apt-card__slides">
+              <div class="apt-card__slide active" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-1/1.jpg')"></div>
+              <div class="apt-card__slide" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-1/2.jpg')"></div>
+              <div class="apt-card__slide" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-1/3.jpg')"></div>
+              <div class="apt-card__slide" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-1/4.jpg')"></div>
+            </div>
+            <button class="apt-card__snav apt-card__snav--prev" aria-label="Prev">
+              <span class="apt-card__snav-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="10,2 4,8 10,14"/></svg></span>
+            </button>
+            <button class="apt-card__snav apt-card__snav--next" aria-label="Next">
+              <span class="apt-card__snav-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,2 12,8 6,14"/></svg></span>
+            </button>
+            <div class="apt-card__sdots">
+              <span class="apt-card__sdot active"></span>
+              <span class="apt-card__sdot"></span>
+              <span class="apt-card__sdot"></span>
+              <span class="apt-card__sdot"></span>
+            </div>
+            <span class="apt-card__badge apt-card__badge--pick" data-i18n="apt1_badge">Guest pick</span>
+          </div>
+          <div class="apt-card__body">
+            <div class="apt-card__name" data-i18n="apt1_name">Suite apartment No1</div>
+            <div class="apt-card__desc" data-i18n="apt1_desc">The biggest apartment — separated living room, open bathroom, full of natural light.</div>
+            <div class="apt-card__meta">
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="1"/></svg>
+                40 m<sup>2</sup>
+              </span>
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span data-i18n="apt_upto2">up to 2</span>
+              </span>
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                <span data-i18n="apt_balcony">Balcony</span>
+              </span>
+            </div>
+            <div class="apt-card__footer">
+              <div class="apt-card__price">
+                <div class="apt-card__price-from" data-i18n="apt_from">from</div>
+                <div><span class="apt-card__price-val">$110</span> <span class="apt-card__price-unit" data-i18n="apt_perday">/ night</span></div>
+              </div>
+              <a href="#book" class="apt-card__btn" data-i18n="apt_btn">Book<span class="btn-arrow">→</span></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- No2 -->
+        <div class="apt-card reveal">
+          <div class="apt-card__img-wrap">
+            <div class="apt-card__slides">
+              <div class="apt-card__slide active" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-2/1.jpg')"></div>
+              <div class="apt-card__slide" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-2/2.jpg')"></div>
+              <div class="apt-card__slide" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-2/3.jpg')"></div>
+              <div class="apt-card__slide" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-2/4.jpg')"></div>
+            </div>
+            <button class="apt-card__snav apt-card__snav--prev" aria-label="Prev">
+              <span class="apt-card__snav-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="10,2 4,8 10,14"/></svg></span>
+            </button>
+            <button class="apt-card__snav apt-card__snav--next" aria-label="Next">
+              <span class="apt-card__snav-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,2 12,8 6,14"/></svg></span>
+            </button>
+            <div class="apt-card__sdots">
+              <span class="apt-card__sdot active"></span>
+              <span class="apt-card__sdot"></span>
+              <span class="apt-card__sdot"></span>
+              <span class="apt-card__sdot"></span>
+            </div>
+            <span class="apt-card__badge apt-card__badge--deal" data-i18n="apt2_badge">Best price</span>
+          </div>
+          <div class="apt-card__body">
+            <div class="apt-card__name" data-i18n="apt2_name">Suite apartment No2</div>
+            <div class="apt-card__desc" data-i18n="apt2_desc">Large studio, Scandinavian design, innovative blurring bathroom glass and balcony.</div>
+            <div class="apt-card__meta">
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="1"/></svg>
+                35 m<sup>2</sup>
+              </span>
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span data-i18n="apt_upto2">up to 2</span>
+              </span>
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                <span data-i18n="apt_balcony">Balcony</span>
+              </span>
+            </div>
+            <div class="apt-card__footer">
+              <div class="apt-card__price">
+                <div class="apt-card__price-from" data-i18n="apt_from">from</div>
+                <div>
+                  <span class="apt-card__price-original">$130</span>
+                  <span class="apt-card__price-val">$105</span>
+                  <span class="apt-card__price-unit" data-i18n="apt_perday">/ night</span>
+                  <span class="apt-card__price-discount">−19%</span>
+                </div>
+              </div>
+              <a href="#book" class="apt-card__btn" data-i18n="apt_btn">Book<span class="btn-arrow">→</span></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- No3 -->
+        <div class="apt-card reveal">
+          <div class="apt-card__img-wrap">
+            <div class="apt-card__slides">
+              <div class="apt-card__slide active" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-3/1.jpg')"></div>
+              <div class="apt-card__slide" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-3/2.jpg')"></div>
+              <div class="apt-card__slide" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-3/3.jpg')"></div>
+              <div class="apt-card__slide" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-3/4.jpg')"></div>
+            </div>
+            <button class="apt-card__snav apt-card__snav--prev" aria-label="Prev">
+              <span class="apt-card__snav-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="10,2 4,8 10,14"/></svg></span>
+            </button>
+            <button class="apt-card__snav apt-card__snav--next" aria-label="Next">
+              <span class="apt-card__snav-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,2 12,8 6,14"/></svg></span>
+            </button>
+            <div class="apt-card__sdots">
+              <span class="apt-card__sdot active"></span>
+              <span class="apt-card__sdot"></span>
+              <span class="apt-card__sdot"></span>
+              <span class="apt-card__sdot"></span>
+            </div>
+          </div>
+          <div class="apt-card__body">
+            <div class="apt-card__name" data-i18n="apt3_name">Suite apartment No3</div>
+            <div class="apt-card__desc" data-i18n="apt3_desc">Functional and cosy. High ceiling creates a mezzanine bed level — perfect for mid-stay.</div>
+            <div class="apt-card__meta">
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="1"/></svg>
+                20 m<sup>2</sup>
+              </span>
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                up to 2
+              </span>
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                Balcony
+              </span>
+            </div>
+            <div class="apt-card__footer">
+              <div class="apt-card__price">
+                <div class="apt-card__price-from">from</div>
+                <div><span class="apt-card__price-val">$80</span> <span class="apt-card__price-unit">/ day</span></div>
+              </div>
+              <a href="#book" class="apt-card__btn">Book<span class="btn-arrow">→</span></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- No4 -->
+        <div class="apt-card reveal">
+          <div class="apt-card__img-wrap">
+            <div class="apt-card__slides">
+              <div class="apt-card__slide active" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-4/1.jpg')"></div>
+              <div class="apt-card__slide" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-4/2.jpg')"></div>
+              <div class="apt-card__slide" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-4/3.jpg')"></div>
+              <div class="apt-card__slide" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-4/4.jpg')"></div>
+            </div>
+            <button class="apt-card__snav apt-card__snav--prev" aria-label="Prev">
+              <span class="apt-card__snav-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="10,2 4,8 10,14"/></svg></span>
+            </button>
+            <button class="apt-card__snav apt-card__snav--next" aria-label="Next">
+              <span class="apt-card__snav-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,2 12,8 6,14"/></svg></span>
+            </button>
+            <div class="apt-card__sdots">
+              <span class="apt-card__sdot active"></span>
+              <span class="apt-card__sdot"></span>
+              <span class="apt-card__sdot"></span>
+              <span class="apt-card__sdot"></span>
+            </div>
+          </div>
+          <div class="apt-card__body">
+            <div class="apt-card__name" data-i18n="apt4_name">Junior Suite No4</div>
+            <div class="apt-card__desc" data-i18n="apt4_desc">Tropical shower, croissants on the balcony, cinema-like sofa — your holiday in the city.</div>
+            <div class="apt-card__meta">
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="1"/></svg>
+                36 m<sup>2</sup>
+              </span>
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                up to 2
+              </span>
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                Balcony
+              </span>
+            </div>
+            <div class="apt-card__footer">
+              <div class="apt-card__price">
+                <div class="apt-card__price-from">from</div>
+                <div><span class="apt-card__price-val">$100</span> <span class="apt-card__price-unit">/ day</span></div>
+              </div>
+              <a href="#book" class="apt-card__btn">Book<span class="btn-arrow">→</span></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- No5 -->
+        <div class="apt-card reveal">
+          <div class="apt-card__img-wrap">
+            <div class="apt-card__slides">
+              <div class="apt-card__slide active" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-5/1.jpg')"></div>
+              <div class="apt-card__slide" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-5/2.jpg')"></div>
+              <div class="apt-card__slide" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-5/3.jpg')"></div>
+              <div class="apt-card__slide" style="background-image:url('https://owntown.apartments/assets/ph-rooms/room-5/4.jpg')"></div>
+            </div>
+            <button class="apt-card__snav apt-card__snav--prev" aria-label="Prev">
+              <span class="apt-card__snav-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="10,2 4,8 10,14"/></svg></span>
+            </button>
+            <button class="apt-card__snav apt-card__snav--next" aria-label="Next">
+              <span class="apt-card__snav-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,2 12,8 6,14"/></svg></span>
+            </button>
+            <div class="apt-card__sdots">
+              <span class="apt-card__sdot active"></span>
+              <span class="apt-card__sdot"></span>
+              <span class="apt-card__sdot"></span>
+              <span class="apt-card__sdot"></span>
+            </div>
+          </div>
+          <div class="apt-card__body">
+            <div class="apt-card__name" data-i18n="apt5_name">Smart Plus No5</div>
+            <div class="apt-card__desc" data-i18n="apt5_desc">Our most unusual layout. Bed at the upper level and a cosy cave-like area below — a real dream.</div>
+            <div class="apt-card__meta">
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="1"/></svg>
+                26 m<sup>2</sup>
+              </span>
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                up to 3
+              </span>
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+                Mezzanine
+              </span>
+            </div>
+            <div class="apt-card__footer">
+              <div class="apt-card__price">
+                <div class="apt-card__price-from">from</div>
+                <div><span class="apt-card__price-val">$90</span> <span class="apt-card__price-unit">/ day</span></div>
+              </div>
+              <a href="#book" class="apt-card__btn">Book<span class="btn-arrow">→</span></a>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.apts__grid -->
+
+    </div><!-- /.apts__layout -->
+  </section>
+
+  <!-- ─── AMENITIES ──────────────────────────────────────────── -->
+  <section class="section" id="amenities">
+    <div class="container">
+      <p class="section__label reveal" data-i18n="amen_label">Included in every apartment</p>
+      <h2 class="section__title reveal" data-i18n-html="amen_title">Everything<br>you need</h2>
+      <div class="amenities__grid reveal">
+        <div class="amenity">
+          <div class="amenity__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><circle cx="12" cy="20" r="1"/></svg>
+          </div>
+          <div class="amenity__name" data-i18n="am1_name">Free Wi-Fi</div>
+          <div class="amenity__note" data-i18n="am1_note">High-speed internet throughout</div>
+        </div>
+        <div class="amenity">
+          <div class="amenity__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+          </div>
+          <div class="amenity__name" data-i18n="am2_name">Self check-in</div>
+          <div class="amenity__note" data-i18n="am2_note">Arrive at any time, day or night</div>
+        </div>
+        <div class="amenity">
+          <div class="amenity__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          </div>
+          <div class="amenity__name" data-i18n="am3_name">Equipped kitchen</div>
+          <div class="amenity__note" data-i18n="am3_note">Fridge, induction cooker, basic local food</div>
+        </div>
+        <div class="amenity">
+          <div class="amenity__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <div class="amenity__name" data-i18n="am4_name">Smart TV + Netflix</div>
+          <div class="amenity__note" data-i18n="am4_note">Free Netflix subscription included</div>
+        </div>
+        <div class="amenity">
+          <div class="amenity__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="amenity__name" data-i18n="am5_name">Eco cosmetics</div>
+          <div class="amenity__note" data-i18n="am5_note">Local sustainable personal care products</div>
+        </div>
+        <div class="amenity">
+          <div class="amenity__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          </div>
+          <div class="amenity__name" data-i18n="am6_name">A/C & heating</div>
+          <div class="amenity__note" data-i18n="am6_note">Climate control in every apartment</div>
+        </div>
+        <div class="amenity">
+          <div class="amenity__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          </div>
+          <div class="amenity__name" data-i18n="am7_name">24/7 support</div>
+          <div class="amenity__note" data-i18n="am7_note">Administrator-friend ready to help anytime</div>
+        </div>
+        <div class="amenity">
+          <div class="amenity__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <div class="amenity__name" data-i18n="am8_name">Laundry</div>
+          <div class="amenity__note" data-i18n="am8_note">Shared laundry zone, iron & dryer available</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── RATINGS ────────────────────────────────────────────── -->
+  <section class="section" id="ratings">
+    <div class="container">
+      <div class="ratings reveal">
+        <!-- Hero score -->
+        <div class="ratings__hero">
+          <span class="ratings__laurel">🏆</span>
+          <span class="ratings__score" data-i18n="rat_score">4.89</span>
+          <span class="ratings__laurel" style="transform:scaleX(-1)">🏆</span>
+        </div>
+        <div class="ratings__label" data-i18n="rat_label">Guest favorite</div>
+        <div class="ratings__sub" data-i18n="rat_sub">Based on ratings, reviews, and reliability across all apartments</div>
+
+        <!-- Detailed grid -->
+        <div class="ratings__grid">
+
+          <!-- Overall bar chart -->
+          <div class="ratings__col">
+            <div class="ratings__overall-label" data-i18n="rat_overall">Overall rating</div>
+            <div class="ratings__bar-row">
+              <span>5</span>
+              <div class="ratings__bar-track"><div class="ratings__bar-fill" style="width:87%"></div></div>
+            </div>
+            <div class="ratings__bar-row">
+              <span>4</span>
+              <div class="ratings__bar-track"><div class="ratings__bar-fill" style="width:10%"></div></div>
+            </div>
+            <div class="ratings__bar-row">
+              <span>3</span>
+              <div class="ratings__bar-track"><div class="ratings__bar-fill" style="width:2%"></div></div>
+            </div>
+            <div class="ratings__bar-row">
+              <span>2</span>
+              <div class="ratings__bar-track"><div class="ratings__bar-fill" style="width:1%"></div></div>
+            </div>
+            <div class="ratings__bar-row">
+              <span>1</span>
+              <div class="ratings__bar-track"><div class="ratings__bar-fill" style="width:0%"></div></div>
+            </div>
+          </div>
+
+          <!-- Cleanliness -->
+          <div class="ratings__col">
+            <div class="ratings__cat-name" data-i18n="rat_clean">Cleanliness</div>
+            <div class="ratings__cat-val">4.9</div>
+            <div class="ratings__cat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.5 3.5L3 10l1.5 1.5M14.5 3.5L21 10l-1.5 1.5M12 8v13M8 17l4 4 4-4"/><path d="M6.5 7.5c0 3 5.5 5 5.5 5s5.5-2 5.5-5"/></svg>
+            </div>
+          </div>
+
+          <!-- Accuracy -->
+          <div class="ratings__col">
+            <div class="ratings__cat-name" data-i18n="rat_acc">Accuracy</div>
+            <div class="ratings__cat-val">4.9</div>
+            <div class="ratings__cat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
+            </div>
+          </div>
+
+          <!-- Check-in -->
+          <div class="ratings__col">
+            <div class="ratings__cat-name" data-i18n="rat_checkin">Check-in</div>
+            <div class="ratings__cat-val">4.9</div>
+            <div class="ratings__cat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            </div>
+          </div>
+
+          <!-- Communication -->
+          <div class="ratings__col">
+            <div class="ratings__cat-name" data-i18n="rat_comm">Communication</div>
+            <div class="ratings__cat-val">4.9</div>
+            <div class="ratings__cat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            </div>
+          </div>
+
+          <!-- Location -->
+          <div class="ratings__col">
+            <div class="ratings__cat-name" data-i18n="rat_loc">Location</div>
+            <div class="ratings__cat-val">5.0</div>
+            <div class="ratings__cat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6l9-3 9 3v6c0 5.25-3.75 10.13-9 12-5.25-1.87-9-6.75-9-12V6z"/><path d="M9 12l2 2 4-4"/></svg>
+            </div>
+          </div>
+
+          <!-- Value -->
+          <div class="ratings__col">
+            <div class="ratings__cat-name" data-i18n="rat_val">Value</div>
+            <div class="ratings__cat-val">4.9</div>
+            <div class="ratings__cat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── LOCATION ───────────────────────────────────────────── -->
+  <section class="section" id="location">
+    <div class="container">
+      <div class="location__grid">
+        <div class="reveal">
+          <p class="section__label" data-i18n="loc_label">Location</p>
+          <h2 class="section__title" data-i18n-html="loc_title">At the heart<br>of it all</h2>
+          <div class="location__address">
+            <strong>OWNTOWN Apart Hotel</strong>
+            <span data-i18n="loc_address">Kruhlouniversytetska street 4b, Kyiv, 01024, Ukraine</span>
+          </div>
+          <div class="location__nearby">
+            <div class="location__nearby-item" data-i18n="loc_near1">Khreschatyk street — 2 min walk</div>
+            <div class="location__nearby-item" data-i18n="loc_near2">Bessarabska Market — 3 min walk</div>
+            <div class="location__nearby-item" data-i18n="loc_near3">Pinchuk Art Centre — 5 min walk</div>
+            <div class="location__nearby-item" data-i18n="loc_near4">Teatralna metro station — 5 min walk</div>
+            <div class="location__nearby-item" data-i18n="loc_near5">Arsenalna metro station — 10 min walk</div>
+          </div>
+          <a href="https://maps.google.com/?q=Kruhlouniversytetska+4b,+Kyiv" target="_blank" class="btn-outline" style="color:var(--black);border-color:var(--beige-mid)" data-i18n="loc_maps_btn">Open in Google Maps</a>
+        </div>
+        <div class="location__map reveal">
+          <div class="location__map-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            <span>Kruhlouniversytetska 4b</span>
+            <a href="https://maps.google.com/?q=Kruhlouniversytetska+4b,+Kyiv" target="_blank">View on map →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FAQ ────────────────────────────────────────────────── -->
+  <section class="section section--beige" id="faq">
+    <div class="container">
+      <p class="section__label reveal" data-i18n="faq_label">FAQ</p>
+      <h2 class="section__title reveal" data-i18n="faq_title">Common questions</h2>
+      <div class="faq__list reveal">
+        <div class="faq__item">
+          <button class="faq__question">
+            <span data-i18n="faq1_q">What are the check-in and check-out times?</span>
+            <span class="faq__icon"></span>
+          </button>
+          <div class="faq__answer"><div class="faq__answer-inner" data-i18n="faq1_a">Check-in is from 14:00. Check-out is until 11:00. We have a self check-in system, so you can arrive at any time after 14:00 without needing to meet anyone.</div></div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__question">
+            <span data-i18n="faq2_q">How do I book and pay?</span>
+            <span class="faq__icon"></span>
+          </button>
+          <div class="faq__answer"><div class="faq__answer-inner" data-i18n="faq2_a">You can book directly through our website or contact us via WhatsApp or Telegram. We accept card payments. You can also call us at +380 95 588 82 22.</div></div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__question">
+            <span data-i18n="faq3_q">What is the cancellation policy?</span>
+            <span class="faq__icon"></span>
+          </button>
+          <div class="faq__answer"><div class="faq__answer-inner" data-i18n="faq3_a">Please contact us directly for cancellation terms — they may vary depending on the booking dates and apartment type. We always try to find the best solution for our guests.</div></div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__question">
+            <span data-i18n="faq4_q">Is there a minimum stay?</span>
+            <span class="faq__icon"></span>
+          </button>
+          <div class="faq__answer"><div class="faq__answer-inner" data-i18n="faq4_a">The minimum stay is 1 night. We also welcome long-term guests — please contact us for weekly or monthly rates.</div></div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__question">
+            <span data-i18n="faq5_q">Are pets allowed?</span>
+            <span class="faq__icon"></span>
+          </button>
+          <div class="faq__answer"><div class="faq__answer-inner" data-i18n="faq5_a">Please contact us in advance to discuss pet-friendly options. We consider each case individually and do our best to accommodate our guests.</div></div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__question">
+            <span data-i18n="faq6_q">Is there an elevator?</span>
+            <span class="faq__icon"></span>
+          </button>
+          <div class="faq__answer"><div class="faq__answer-inner" data-i18n="faq6_a">Unfortunately, the elevator in the building is currently out of order. Please keep this in mind when booking, especially if you have heavy luggage.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CONTACTS + BOOK ────────────────────────────────────── -->
+  <section class="section section--dark" id="book">
+    <div class="container">
+      <div class="contacts__grid">
+        <div class="contacts__info reveal">
+          <p class="section__label" data-i18n="book_label">Book your stay</p>
+          <h2 class="contacts__cta-title" data-i18n-html="book_title">Ready for<br><span>your own town?</span></h2>
+          <!-- Booking embed placeholder -->
+          <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:32px;margin-bottom:32px;">
+            <p style="font-size:13px;color:rgba(255,255,255,0.4);letter-spacing:0.05em;text-align:center;line-height:1.6;">
+              <span data-i18n="book_widget">Booking widget</span><br><span style="font-size:11px;opacity:0.6;" data-i18n="book_widget_sub">CRM embed will be placed here</span>
+            </p>
+          </div>
+          <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:12px;letter-spacing:0.05em;" data-i18n="book_or">or contact us directly</p>
+          <div class="contacts__messengers">
+            <a href="https://t.me/owntown" class="contacts__messenger">Telegram</a>
+            <a href="https://wa.me/380955888222" class="contacts__messenger">WhatsApp</a>
+            <a href="tel:+380955888222" class="contacts__messenger" data-i18n="book_call">Call</a>
+          </div>
+        </div>
+        <div class="contacts__detail reveal">
+          <div class="contacts__row">
+            <span class="contacts__row-label" data-i18n="ct_address">Address</span>
+            <span class="contacts__row-val" data-i18n="loc_address_full">Kruhlouniversytetska street 4b,<br>Kyiv, 01024, Ukraine</span>
+          </div>
+          <div class="contacts__row">
+            <span class="contacts__row-label" data-i18n="ct_phone">Phone</span>
+            <span class="contacts__row-val"><a href="tel:+380955888222">+380 95 588 82 22</a></span>
+          </div>
+          <div class="contacts__row">
+            <span class="contacts__row-label" data-i18n="ct_email">Email</span>
+            <span class="contacts__row-val"><a href="mailto:owntownapartments@gmail.com">owntownapartments@gmail.com</a></span>
+          </div>
+          <div class="contacts__row">
+            <span class="contacts__row-label" data-i18n="ct_checkin">Check-in</span>
+            <span class="contacts__row-val" data-i18n="ct_checkin_val">From 14:00 (self check-in)</span>
+          </div>
+          <div class="contacts__row">
+            <span class="contacts__row-label" data-i18n="ct_checkout">Check-out</span>
+            <span class="contacts__row-val" data-i18n="ct_checkout_val">Until 11:00</span>
+          </div>
+          <div class="contacts__social">
+            <a href="https://facebook.com" target="_blank">Facebook</a>
+            <a href="https://instagram.com" target="_blank">Instagram</a>
+            <a href="https://t.me/owntown" target="_blank">Telegram</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── COMPARE MODAL ────────────────────────────────────────── -->
+  <div class="compare-modal" id="compareModal">
+    <div class="compare-modal__backdrop" id="compareBackdrop"></div>
+    <div class="compare-modal__panel">
+      <div class="compare-modal__header">
+        <h3 data-i18n="compare_title">Compare apartments</h3>
+        <button class="compare-modal__close" id="compareClose" aria-label="Close">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="compare-modal__body">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th class="ct-feat"></th>
+              <th>No1 Suite</th>
+              <th>No2 Suite</th>
+              <th>No3 Suite</th>
+              <th>No4 Junior</th>
+              <th>No5 Smart+</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ct-feat">Photo</td>
+              <td class="ct-photo"><img src="https://owntown.apartments/assets/ph-rooms/room-1/1.jpg" alt="No1" loading="lazy"></td>
+              <td class="ct-photo"><img src="https://owntown.apartments/assets/ph-rooms/room-2/1.jpg" alt="No2" loading="lazy"></td>
+              <td class="ct-photo"><img src="https://owntown.apartments/assets/ph-rooms/room-3/1.jpg" alt="No3" loading="lazy"></td>
+              <td class="ct-photo"><img src="https://owntown.apartments/assets/ph-rooms/room-4/1.jpg" alt="No4" loading="lazy"></td>
+              <td class="ct-photo"><img src="https://owntown.apartments/assets/ph-rooms/room-5/1.jpg" alt="No5" loading="lazy"></td>
+            </tr>
+            <tr>
+              <td class="ct-feat">Type</td>
+              <td><span class="ct-badge">Suite</span></td>
+              <td><span class="ct-badge">Suite</span></td>
+              <td><span class="ct-badge">Suite</span></td>
+              <td><span class="ct-badge">Junior Suite</span></td>
+              <td><span class="ct-badge">Smart Plus</span></td>
+            </tr>
+            <tr>
+              <td class="ct-feat">Size</td>
+              <td>40 m<sup>2</sup></td>
+              <td>35 m<sup>2</sup></td>
+              <td>20 m<sup>2</sup></td>
+              <td>36 m<sup>2</sup></td>
+              <td>26 m<sup>2</sup></td>
+            </tr>
+            <tr>
+              <td class="ct-feat">Guests</td>
+              <td>up to 2</td>
+              <td>up to 2</td>
+              <td>up to 2</td>
+              <td>up to 2</td>
+              <td>up to 3</td>
+            </tr>
+            <tr>
+              <td class="ct-feat">Balcony</td>
+              <td><span class="ct-check">✓</span></td>
+              <td><span class="ct-check">✓</span></td>
+              <td><span class="ct-check">✓</span></td>
+              <td><span class="ct-check">✓</span></td>
+              <td><span class="ct-dash">—</span></td>
+            </tr>
+            <tr>
+              <td class="ct-feat">Mezzanine</td>
+              <td><span class="ct-dash">—</span></td>
+              <td><span class="ct-dash">—</span></td>
+              <td><span class="ct-check">✓</span></td>
+              <td><span class="ct-dash">—</span></td>
+              <td><span class="ct-check">✓</span></td>
+            </tr>
+            <tr>
+              <td class="ct-feat">Living room</td>
+              <td><span class="ct-check">✓</span></td>
+              <td><span class="ct-dash">—</span></td>
+              <td><span class="ct-dash">—</span></td>
+              <td><span class="ct-dash">—</span></td>
+              <td><span class="ct-dash">—</span></td>
+            </tr>
+            <tr>
+              <td class="ct-feat">Price / night</td>
+              <td><span class="ct-price-val">$110</span></td>
+              <td><span class="ct-price-val">$105</span></td>
+              <td><span class="ct-price-val">$80</span></td>
+              <td><span class="ct-price-val">$100</span></td>
+              <td><span class="ct-price-val">$90</span></td>
+            </tr>
+            <tr>
+              <td class="ct-feat"></td>
+              <td><a href="#book" class="ct-book" onclick="closeCompareModal()">Book</a></td>
+              <td><a href="#book" class="ct-book" onclick="closeCompareModal()">Book</a></td>
+              <td><a href="#book" class="ct-book" onclick="closeCompareModal()">Book</a></td>
+              <td><a href="#book" class="ct-book" onclick="closeCompareModal()">Book</a></td>
+              <td><a href="#book" class="ct-book" onclick="closeCompareModal()">Book</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── FOOTER ──────────────────────────────────────────────── -->
+  <footer class="footer">
+    <span class="footer__copy">© 2024 OWNTOWN Apart Hotel. Kyiv, Ukraine.</span>
+    <div class="footer__logo">
+      <img src="https://owntown.apartments/assets/logo-owntown.svg" alt="OWNTOWN" />
+    </div>
+    <span class="footer__copy">Kruhlouniversytetska 4b</span>
+  </footer>
+
+  <!-- ─── STICKY MOBILE BOOK ─────────────────────────────────── -->
+  <div class="sticky-book" id="stickyBook">
+    <a href="#book" class="sticky-book__btn" data-i18n="hero_cta_book">Book now</a>
+  </div>
+
+  <!-- ─── GSAP ────────────────────────────────────────────────── -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Draggable.min.js"></script>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger, Draggable);
+
+    /* ── 1. HERO SLIDER ──────────────────────────────────────── */
+    const slides = document.querySelectorAll('.hero__slide');
+    const dots   = document.querySelectorAll('.hero__dot');
+    let current  = 0;
+    let sliderTimer;
+
+    function goTo(index) {
+      const prev = current;
+      current = (index + slides.length) % slides.length;
+      gsap.to(slides[prev], { opacity: 0, duration: 1.2, ease: 'power2.inOut' });
+      gsap.to(slides[current], { opacity: 1, duration: 1.2, ease: 'power2.inOut' });
+      dots[prev].classList.remove('active');
+      dots[current].classList.add('active');
+    }
+
+    function nextSlide() { goTo(current + 1); }
+
+    function startSlider() {
+      sliderTimer = setInterval(nextSlide, 5000);
+    }
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        clearInterval(sliderTimer);
+        goTo(+dot.dataset.index);
+        startSlider();
+      });
+    });
+
+    document.getElementById('heroPrev').addEventListener('click', () => {
+      clearInterval(sliderTimer);
+      goTo(current - 1);
+      startSlider();
+    });
+    document.getElementById('heroNext').addEventListener('click', () => {
+      clearInterval(sliderTimer);
+      goTo(current + 1);
+      startSlider();
+    });
+
+    startSlider();
+
+    /* ── 2. HERO CONTENT ENTRANCE ───────────────────────────── */
+    const heroTl = gsap.timeline({ delay: 0.2 });
+    heroTl
+      .from('.hero__eyebrow', { opacity: 0, y: 20, duration: 0.8, ease: 'power3.out' })
+      .from('.hero__title',   { opacity: 0, y: 30, duration: 1,   ease: 'power3.out' }, '-=0.4')
+      .from('.hero__ctas',    { opacity: 0, y: 20, duration: 0.8, ease: 'power3.out' }, '-=0.5')
+      .from('.hero__dots',    { opacity: 0, duration: 0.6 }, '-=0.4');
+
+    /* ── 3. HERO PARALLAX ───────────────────────────────────── */
+    gsap.to('.hero__slides', {
+      yPercent: 30,
+      ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+    });
+
+    /* ── 4. NAV SCROLL BEHAVIOR ─────────────────────────────── */
+    const nav = document.getElementById('nav');
+    ScrollTrigger.create({
+      trigger: document.body,
+      start: 'top+=80 top',
+      onEnter:      () => nav.classList.add('scrolled'),
+      onLeaveBack:  () => nav.classList.remove('scrolled'),
+    });
+
+    /* ── 5. SCROLL REVEALS ──────────────────────────────────── */
+    gsap.utils.toArray('.reveal').forEach((el, i) => {
+      gsap.fromTo(el,
+        { opacity: 0, y: 36 },
+        {
+          opacity: 1, y: 0,
+          duration: 0.9,
+          ease: 'power3.out',
+          delay: (i % 3) * 0.08,
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 88%',
+            toggleActions: 'play none none none'
+          }
+        }
+      );
+    });
+
+    /* ── 6. APARTMENTS FAN → GRID ANIMATION ─────────────────── */
+    const aptCards = document.querySelectorAll('.apt-card');
+
+    // Each card's initial "fanned deck" state (offset from its grid position)
+    const fanStates = [
+      { x:  180, y: -160, rotation:  10, scale: 0.80, opacity: 1 },
+      { x:  -70, y: -130, rotation:  -7, scale: 0.84, opacity: 1 },
+      { x:  140, y:  -90, rotation:  14, scale: 0.78, opacity: 1 },
+      { x: -110, y:  -60, rotation: -11, scale: 0.82, opacity: 1 },
+      { x:   60, y:  -40, rotation:   6, scale: 0.86, opacity: 1 },
+    ];
+
+    aptCards.forEach((card, i) => {
+      gsap.set(card, fanStates[i]);
+    });
+
+    const aptTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#aptsGrid',
+        start: 'top 90%',
+        end: 'top 20%',
+        scrub: 1.5,
+      }
+    });
+
+    aptCards.forEach((card, i) => {
+      aptTl.to(card, {
+        x: 0, y: 0, rotation: 0, scale: 1, opacity: 1,
+        duration: 1,
+        ease: 'power2.out',
+      }, i * 0.12);
+    });
+
+    /* ── 7. COMPARE MODAL ───────────────────────────────────── */
+    const compareModal   = document.getElementById('compareModal');
+    const compareBtn     = document.getElementById('compareBtn');
+    const compareClose   = document.getElementById('compareClose');
+    const compareBackdrop = document.getElementById('compareBackdrop');
+
+    function openCompareModal() {
+      compareModal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeCompareModal() {
+      compareModal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    compareBtn.addEventListener('click', openCompareModal);
+    compareClose.addEventListener('click', closeCompareModal);
+    compareBackdrop.addEventListener('click', closeCompareModal);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCompareModal(); });
+
+    /* ── 8. ABOUT SLIDER ────────────────────────────────────── */
+    const aboutSlides = document.querySelectorAll('.about__slide');
+    const aboutDotEls = document.querySelectorAll('.about__dot');
+    let aboutCurrent = 0;
+
+    function aboutGoTo(index) {
+      const prev = aboutCurrent;
+      aboutCurrent = (index + aboutSlides.length) % aboutSlides.length;
+      gsap.to(aboutSlides[prev], { opacity: 0, duration: 1, ease: 'power2.inOut' });
+      gsap.to(aboutSlides[aboutCurrent], { opacity: 1, duration: 1, ease: 'power2.inOut' });
+      aboutDotEls[prev].classList.remove('active');
+      aboutDotEls[aboutCurrent].classList.add('active');
+    }
+
+    aboutDotEls.forEach(dot => {
+      dot.addEventListener('click', () => aboutGoTo(+dot.dataset.index));
+    });
+    document.getElementById('aboutPrev').addEventListener('click', () => aboutGoTo(aboutCurrent - 1));
+    document.getElementById('aboutNext').addEventListener('click', () => aboutGoTo(aboutCurrent + 1));
+
+    /* ── 9. CARD IMAGE SLIDERS ──────────────────────────────── */
+    document.querySelectorAll('.apt-card__img-wrap').forEach(wrap => {
+      const slides = wrap.querySelectorAll('.apt-card__slide');
+      const dots   = wrap.querySelectorAll('.apt-card__sdot');
+      const prev   = wrap.querySelector('.apt-card__snav--prev');
+      const next   = wrap.querySelector('.apt-card__snav--next');
+      if (!slides.length) return;
+      let current = 0;
+
+      function goTo(idx) {
+        slides[current].classList.remove('active');
+        dots[current] && dots[current].classList.remove('active');
+        current = (idx + slides.length) % slides.length;
+        slides[current].classList.add('active');
+        dots[current] && dots[current].classList.add('active');
+      }
+
+      prev && prev.addEventListener('click', e => { e.preventDefault(); goTo(current - 1); });
+      next && next.addEventListener('click', e => { e.preventDefault(); goTo(current + 1); });
+      dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+    });
+
+    /* ── 10. FAQ ACCORDION ──────────────────────────────────── */
+    document.querySelectorAll('.faq__question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item   = btn.closest('.faq__item');
+        const answer = item.querySelector('.faq__answer');
+        const inner  = item.querySelector('.faq__answer-inner');
+        const isOpen = item.classList.contains('open');
+
+        // Close all
+        document.querySelectorAll('.faq__item.open').forEach(openItem => {
+          if (openItem !== item) {
+            openItem.classList.remove('open');
+            gsap.to(openItem.querySelector('.faq__answer'), {
+              height: 0, duration: 0.4, ease: 'power2.inOut'
+            });
+          }
+        });
+
+        if (isOpen) {
+          item.classList.remove('open');
+          gsap.to(answer, { height: 0, duration: 0.4, ease: 'power2.inOut' });
+        } else {
+          item.classList.add('open');
+          gsap.set(answer, { height: 'auto' });
+          const h = answer.offsetHeight;
+          gsap.fromTo(answer,
+            { height: 0 },
+            { height: h, duration: 0.45, ease: 'power2.out' }
+          );
+        }
+      });
+    });
+
+    /* ── 8. STICKY BOOK BUTTON SHOW/HIDE ────────────────────── */
+    const stickyBook = document.getElementById('stickyBook');
+    ScrollTrigger.create({
+      trigger: '.hero',
+      start: 'bottom 60%',
+      onEnter:     () => gsap.to(stickyBook, { y: 0, opacity: 1, duration: 0.4 }),
+      onLeaveBack: () => gsap.to(stickyBook, { y: 80, opacity: 0, duration: 0.3 }),
+    });
+    gsap.set(stickyBook, { y: 80, opacity: 0 });
+
+    /* ── 9. SECTION TITLE STAGGER ───────────────────────────── */
+    gsap.utils.toArray('.section__title').forEach(title => {
+      gsap.fromTo(title,
+        { opacity: 0, y: 24 },
+        {
+          opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: title, start: 'top 85%' }
+        }
+      );
+    });
+
+    /* ── 10. LANGUAGE SWITCHER ──────────────────────────────── */
+    const translations = {
+      en: {
+        nav_hotel: 'Hotel',
+        nav_apartments: 'Apartments',
+        nav_contacts: 'Contacts',
+        nav_book: 'Book now',
+        hero_eyebrow: 'Kyiv, Kruhlouniversytetska 4b',
+        hero_title: 'Your own town<br><span>in the heart of Kyiv</span>',
+        hero_cta_book: 'Book now',
+        hero_cta_apts: 'View apartments',
+        about_label: 'About us',
+        about_title: 'A calm place<br>behind Khreschatyk',
+        about_p1: 'Sustainable apartment hotel steps from Khreschatyk. Modern design meets local art — our team is happy to guide you through Kyiv\'s culture and social scene.',
+        usp1_name: 'City centre',
+        usp1_desc: 'Steps from Khreschatyk, Bessarabska Market and Pinchuk Art Centre',
+        usp2_name: 'Fully equipped',
+        usp2_desc: 'Kitchen, Smart TV, Netflix, local sustainable cosmetics and more',
+        usp3_name: 'Check-in 24/7',
+        usp3_desc: 'Self check-in system and an administrator-friend always ready to help',
+        usp4_name: 'Privacy & quiet',
+        usp4_desc: 'The atmosphere of a private apartment with the service of a boutique hotel',
+        apts_label: 'Apartments',
+        apts_title: '5 types.<br>One address.',
+        apts_compare: 'Compare',
+        compare_title: 'Compare apartments',
+        apt1_badge: 'Guest pick', apt1_name: 'Suite apartment No1',
+        apt1_desc: 'The biggest apartment — separated living room, open bathroom, full of natural light.',
+        apt2_badge: 'Best price', apt2_name: 'Suite apartment No2',
+        apt2_desc: 'Large studio, Scandinavian design, innovative blurring bathroom glass and balcony.',
+        apt3_name: 'Suite apartment No3',
+        apt3_desc: 'Functional and cosy. High ceiling creates a mezzanine bed level — perfect for mid-stay.',
+        apt4_name: 'Junior Suite No4',
+        apt4_desc: 'Tropical shower, croissants on the balcony, cinema-like sofa — your holiday in the city.',
+        apt5_name: 'Smart Plus No5',
+        apt5_desc: 'Our most unusual layout. Bed at the upper level and a cosy cave-like area below — a real dream.',
+        apt_upto2: 'up to 2', apt_balcony: 'Balcony', apt_from: 'from', apt_perday: '/ night', apt_btn: 'Book',
+        apts_drag: 'Drag to explore',
+        amen_label: 'Included in every apartment',
+        amen_title: 'Everything<br>you need',
+        am1_name: 'Free Wi-Fi',    am1_note: 'High-speed internet throughout',
+        am2_name: 'Self check-in', am2_note: 'Arrive at any time, day or night',
+        am3_name: 'Equipped kitchen', am3_note: 'Fridge, induction cooker, basic local food',
+        am4_name: 'Smart TV + Netflix', am4_note: 'Free Netflix subscription included',
+        am5_name: 'Eco cosmetics', am5_note: 'Local sustainable personal care products',
+        am6_name: 'A/C & heating', am6_note: 'Climate control in every apartment',
+        am7_name: '24/7 support',  am7_note: 'Administrator-friend ready to help anytime',
+        am8_name: 'Laundry',       am8_note: 'Shared laundry zone, iron & dryer available',
+        rat_score: '4.89', rat_label: 'Guest favorite',
+        rat_sub: 'Based on ratings, reviews, and reliability across all apartments',
+        rat_overall: 'Overall rating', rat_clean: 'Cleanliness', rat_acc: 'Accuracy',
+        rat_checkin: 'Check-in', rat_comm: 'Communication', rat_loc: 'Location', rat_val: 'Value',
+        loc_label: 'Location',
+        loc_title: 'At the heart<br>of it all',
+        loc_address: 'Kruhlouniversytetska street 4b, Kyiv, 01024, Ukraine',
+        loc_address_full: 'Kruhlouniversytetska street 4b,<br>Kyiv, 01024, Ukraine',
+        loc_near1: 'Khreschatyk street — 2 min walk',
+        loc_near2: 'Bessarabska Market — 3 min walk',
+        loc_near3: 'Pinchuk Art Centre — 5 min walk',
+        loc_near4: 'Teatralna metro station — 5 min walk',
+        loc_near5: 'Arsenalna metro station — 10 min walk',
+        loc_maps_btn: 'Open in Google Maps',
+        faq_label: 'FAQ',
+        faq_title: 'Common questions',
+        faq1_q: 'What are the check-in and check-out times?',
+        faq1_a: 'Check-in is from 14:00. Check-out is until 11:00. We have a self check-in system, so you can arrive at any time after 14:00 without needing to meet anyone.',
+        faq2_q: 'How do I book and pay?',
+        faq2_a: 'You can book directly through our website or contact us via WhatsApp or Telegram. We accept card payments. You can also call us at +380 95 588 82 22.',
+        faq3_q: 'What is the cancellation policy?',
+        faq3_a: 'Please contact us directly for cancellation terms — they may vary depending on the booking dates and apartment type. We always try to find the best solution for our guests.',
+        faq4_q: 'Is there a minimum stay?',
+        faq4_a: 'The minimum stay is 1 night. We also welcome long-term guests — please contact us for weekly or monthly rates.',
+        faq5_q: 'Are pets allowed?',
+        faq5_a: 'Please contact us in advance to discuss pet-friendly options. We consider each case individually and do our best to accommodate our guests.',
+        faq6_q: 'Is there an elevator?',
+        faq6_a: 'Unfortunately, the elevator in the building is currently out of order. Please keep this in mind when booking, especially if you have heavy luggage.',
+        book_label: 'Book your stay',
+        book_title: 'Ready for<br><span>your own town?</span>',
+        book_widget: 'Booking widget',
+        book_widget_sub: 'CRM embed will be placed here',
+        book_or: 'or contact us directly',
+        book_call: 'Call',
+        ct_address: 'Address', ct_phone: 'Phone', ct_email: 'Email',
+        ct_checkin: 'Check-in', ct_checkin_val: 'From 14:00 (self check-in)',
+        ct_checkout: 'Check-out', ct_checkout_val: 'Until 11:00',
+        scroll_hint: 'scroll',
+      },
+      ua: {
+        nav_hotel: 'Готель',
+        nav_apartments: 'Апартаменти',
+        nav_contacts: 'Контакти',
+        nav_book: 'Забронювати',
+        hero_eyebrow: 'Київ, Круглоуніверситетська 4б',
+        hero_title: 'Твоє власне місто<br><span>у серці Києва</span>',
+        hero_cta_book: 'Забронювати',
+        hero_cta_apts: 'Переглянути апартаменти',
+        about_label: 'Про нас',
+        about_title: 'Затишне місце<br>за Хрещатиком',
+        about_p1: 'Сталий апарт-готель поруч з Хрещатиком. Сучасний дизайн поєднаний з роботами місцевих художників — ми із задоволенням станемо вашим провідником у світ київської культури.',
+        usp1_name: 'Центр міста',
+        usp1_desc: 'Поруч із Хрещатиком, Бессарабським ринком та Pinchuk Art Centre',
+        usp2_name: 'Повне оснащення',
+        usp2_desc: 'Кухня, Smart TV, Netflix, місцева еко-косметика та більше',
+        usp3_name: 'Заїзд 24/7',
+        usp3_desc: 'Система самостійного заїзду та адміністратор, готовий допомогти будь-коли',
+        usp4_name: 'Приватність і спокій',
+        usp4_desc: 'Атмосфера приватних апартаментів із сервісом бутік-готелю',
+        apts_label: 'Апартаменти',
+        apts_title: '5 типів.<br>Одна адреса.',
+        apts_compare: 'Порівняти',
+        compare_title: 'Порівняти апартаменти',
+        apt1_badge: 'Вибір гостей', apt1_name: 'Апартаменти Сюїт №1',
+        apt1_desc: 'Найбільші апартаменти — окрема вітальня, відкрита ванна кімната, багато природного світла.',
+        apt2_badge: 'Найкраща ціна', apt2_name: 'Апартаменти Сюїт №2',
+        apt2_desc: 'Великий студіо, скандинавський дизайн, інноваційне матове скло у ванній та балкон.',
+        apt3_name: 'Апартаменти Сюїт №3',
+        apt3_desc: 'Функціональні та затишні. Висока стеля створює антресольний рівень для спальні — ідеально для середнього перебування.',
+        apt4_name: 'Junior Suite №4',
+        apt4_desc: 'Тропічний душ, круасани на балконі, диван як у кінотеатрі — ваші міські канікули.',
+        apt5_name: 'Smart Plus №5',
+        apt5_desc: 'Наше найнезвичніше планування. Ліжко на верхньому рівні та затишний закуток знизу — справжня мрія.',
+        apt_upto2: 'до 2 осіб', apt_balcony: 'Балкон', apt_from: 'від', apt_perday: '/ ніч', apt_btn: 'Забронювати',
+        apts_drag: 'Перетягніть для перегляду',
+        amen_label: 'Включено в кожен апартамент',
+        amen_title: 'Все необхідне<br>для вас',
+        am1_name: 'Безкоштовний Wi-Fi', am1_note: 'Швидкісний інтернет по всьому готелю',
+        am2_name: 'Самостійний заїзд', am2_note: 'Приїжджайте будь-якої години, вдень чи вночі',
+        am3_name: 'Обладнана кухня', am3_note: 'Холодильник, індукційна плита, базові продукти',
+        am4_name: 'Smart TV + Netflix', am4_note: 'Безкоштовна підписка Netflix включена',
+        am5_name: 'Еко-косметика', am5_note: 'Місцеві засоби догляду від сталих виробників',
+        am6_name: 'Кондиціонер і опалення', am6_note: 'Клімат-контроль у кожному апартаменті',
+        am7_name: 'Підтримка 24/7', am7_note: 'Адміністратор-друг, готовий допомогти будь-коли',
+        am8_name: 'Пральня', am8_note: 'Спільна зона прання, праска та сушарка',
+        rat_score: '4.89', rat_label: 'Улюблений гостями',
+        rat_sub: 'На основі оцінок, відгуків та надійності в усіх апартаментах',
+        rat_overall: 'Загальна оцінка', rat_clean: 'Чистота', rat_acc: 'Точність опису',
+        rat_checkin: 'Заїзд', rat_comm: 'Комунікація', rat_loc: 'Розташування', rat_val: 'Ціна/якість',
+        loc_label: 'Розташування',
+        loc_title: 'У самому<br>серці міста',
+        loc_address: 'вул. Круглоуніверситетська 4б, Київ, 01024, Україна',
+        loc_address_full: 'вул. Круглоуніверситетська 4б,<br>Київ, 01024, Україна',
+        loc_near1: 'Хрещатик — 2 хв пішки',
+        loc_near2: 'Бессарабський ринок — 3 хв пішки',
+        loc_near3: 'Pinchuk Art Centre — 5 хв пішки',
+        loc_near4: 'Станція метро «Театральна» — 5 хв пішки',
+        loc_near5: 'Станція метро «Арсенальна» — 10 хв пішки',
+        loc_maps_btn: 'Відкрити в Google Maps',
+        faq_label: 'Питання та відповіді',
+        faq_title: 'Найпоширеніші питання',
+        faq1_q: 'Який час заїзду та виїзду?',
+        faq1_a: 'Заїзд з 14:00. Виїзд до 11:00. У нас є система самостійного заселення — ви можете приїхати будь-коли після 14:00 без необхідності когось зустрічати.',
+        faq2_q: 'Як забронювати та оплатити?',
+        faq2_a: 'Ви можете забронювати безпосередньо через сайт або зв\'язатися з нами через WhatsApp чи Telegram. Ми приймаємо оплату карткою. Також можна зателефонувати: +380 95 588 82 22.',
+        faq3_q: 'Яка політика скасування?',
+        faq3_a: 'Будь ласка, зверніться до нас безпосередньо для уточнення умов скасування — вони можуть відрізнятися залежно від дат і типу апартаментів. Ми завжди намагаємося знайти найкраще рішення для наших гостей.',
+        faq4_q: 'Чи є мінімальний термін проживання?',
+        faq4_a: 'Мінімальний термін — 1 ніч. Ми також раді гостям на довший термін — зв\'яжіться з нами для отримання тижневих або місячних тарифів.',
+        faq5_q: 'Чи можна з домашніми тваринами?',
+        faq5_a: 'Будь ласка, зв\'яжіться з нами заздалегідь, щоб обговорити умови проживання з тваринами. Ми розглядаємо кожен випадок індивідуально.',
+        faq6_q: 'Чи є ліфт?',
+        faq6_a: 'На жаль, ліфт у будинку наразі не працює. Будь ласка, майте це на увазі при бронюванні, особливо якщо у вас важкий багаж.',
+        book_label: 'Забронювати проживання',
+        book_title: 'Готові до<br><span>власного міста?</span>',
+        book_widget: 'Форма бронювання',
+        book_widget_sub: 'Тут буде розміщено CRM-віджет',
+        book_or: 'або зв\'яжіться з нами напряму',
+        book_call: 'Подзвонити',
+        ct_address: 'Адреса', ct_phone: 'Телефон', ct_email: 'Email',
+        ct_checkin: 'Заїзд', ct_checkin_val: 'З 14:00 (самостійний заїзд)',
+        ct_checkout: 'Виїзд', ct_checkout_val: 'До 11:00',
+        scroll_hint: 'гортати',
+      }
+    };
+
+    let currentLang = 'en';
+
+    function setLang(lang) {
+      currentLang = lang;
+      const t = translations[lang];
+
+      // Update plain text elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) el.textContent = t[key];
+      });
+
+      // Update innerHTML elements (for <br> and <span> tags)
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (t[key] !== undefined) el.innerHTML = t[key];
+      });
+
+      // Update lang buttons
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+
+      // Update page lang attribute
+      document.documentElement.lang = lang === 'ua' ? 'uk' : 'en';
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLang(btn.dataset.lang));
+    });
+
+  </script>
+</body>
+</html>
